@@ -34,6 +34,7 @@ public class LocationPoller extends Service implements LocationListener {
 
 	@Override
 	public IBinder onBind(Intent intent) {
+		Log.e(TAG, "Someone tried to bind to out location poller");
 		// We do not allow anyone to bind to this, returning null
 		return null;
 	}
