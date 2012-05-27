@@ -1,0 +1,7 @@
+# Swap files
+*.swp
+# generated files
+gen/
+bin/
+# Local properties
+local.properties
