@@ -1,7 +1,9 @@
 package com.professionalperformance.geotracker;
 
+import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,16 +13,18 @@ import android.os.IBinder;
 import android.util.Log;
 
 public class LocationPoller extends Service implements LocationListener {
-	
+
 	private static final String TAG = "LocationPoller";
-	
+
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
 
 		// Acquire a reference to the system Location Manager
 		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+		// Request location updates
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5 * 60 * 1000, 500, this);
 	}
 
 	@Override
@@ -30,35 +34,39 @@ public class LocationPoller extends Service implements LocationListener {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		// TODO Auto-generated method stub
+		// We do not allow anyone to bind to this, returning null
 		return null;
 	}
 
 	// -------- Location listener methods ---------
-	
-	
+
+
 	@Override
-	public void onLocationChanged(Location arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void onProviderDisabled(String arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onLocationChanged(Location loc) {
+		// Store the location into the database
+
+		// Send the location back to the server
 	}
 
 	@Override
-	public void onProviderEnabled(String arg0) {
-		// TODO Auto-generated method stub
-		
+	public void onProviderDisabled(String provider) {
+		new AlertDialog.Builder(this)
+			.setTitle(provider + " disabled")
+			.setCancelable(false)
+			.setMessage("GPS must be enabled, please re-enable gps")
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+
+				}
+			});
 	}
 
 	@Override
-	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		// TODO Auto-generated method stub
-		
+	public void onProviderEnabled(String provider) {
 	}
 
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+	}
 }
