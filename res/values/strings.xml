@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World!</string>
     <string name="app_name">GeoTracker</string>
-
+    <string name="gps_disabled">GPS Disabled!</string>
+    <string name="gps_disabled_message">GPS has been disabled. GPS must be enabled.</string>
 </resources>

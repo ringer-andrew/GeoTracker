@@ -1,9 +1,7 @@
 package com.professionalperformance.geotracker;
 
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,21 +13,29 @@ import android.util.Log;
 public class LocationPoller extends Service implements LocationListener {
 
 	private static final String TAG = "LocationPoller";
+	
+	private static LocationManager mLocationManager;
 
+	
+	public static boolean isGPSActive() {
+		return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	}
+	
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
 
 		// Acquire a reference to the system Location Manager
-		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		// Request location updates
-		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5 * 60 * 1000, 500, this);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5 * 60 * 1000, 500, this);
 	}
 
 	@Override
 	public void onDestroy() {
-		Log.d(TAG, "onDestroy");
+		Log.e(TAG, "onDestroy - why are we being destroyed???");
+		
 	}
 
 	@Override
@@ -44,6 +50,7 @@ public class LocationPoller extends Service implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location loc) {
+		Log.d(TAG, "onLocationChanged");
 		// Store the location into the database
 
 		// Send the location back to the server
@@ -51,23 +58,25 @@ public class LocationPoller extends Service implements LocationListener {
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		new AlertDialog.Builder(this)
-			.setTitle(provider + " disabled")
-			.setCancelable(false)
-			.setMessage("GPS must be enabled, please re-enable gps")
-			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-
-				}
-			});
+		Log.d(TAG, "onProviderDisabled");
+		if (provider == LocationManager.GPS_PROVIDER) {
+			Intent enforceGPS = new Intent(getApplicationContext(), EnforceGPSActivity.class);
+			startActivity(enforceGPS);
+		} else {
+			Log.d(TAG, "provider disabled wasn't gps");
+		}
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
+		Log.d(TAG, "onProviderEnabled");
+		if (provider == LocationManager.GPS_PROVIDER) {
+			Log.d(TAG, "gps re-enabled");
+		}
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+		Log.d(TAG, "onStatusChanged");
 	}
 }
