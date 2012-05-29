@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="location_endpoint">http://50.57.64.84/geckoe/mobile/location/</string>
+</resources>
