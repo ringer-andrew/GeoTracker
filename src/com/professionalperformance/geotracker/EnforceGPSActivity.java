@@ -31,7 +31,7 @@ public class EnforceGPSActivity extends Activity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (LocationPoller.isGPSActive()) {
+		if (LocationPollerService.isGPSActive()) {
 			launchLocationSettings();
 		}
 	}
@@ -41,7 +41,7 @@ public class EnforceGPSActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		Log.d(TAG, "onCreate");
-		if (!LocationPoller.isGPSActive()) {
+		if (!LocationPollerService.isGPSActive()) {
 			Log.d(TAG, "gps is not enabled, forcing the user to activate gps");
 		} else {
 			Log.e(TAG, "EnforceGPS got launched even though gps is active");
@@ -51,7 +51,7 @@ public class EnforceGPSActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		if (isFinishing() && !LocationPoller.isGPSActive()) {
+		if (isFinishing() && !LocationPollerService.isGPSActive()) {
 			Log.d(TAG, "onPause, not finishing, GPS not active");
 			launchLocationSettings();
 		}
@@ -61,7 +61,7 @@ public class EnforceGPSActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (!LocationPoller.isGPSActive()) {
+		if (!LocationPollerService.isGPSActive()) {
 			launchLocationSettings();
 		} else {
 			finish();

@@ -18,7 +18,8 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <service android:enabled="true" android:name=".LocationPoller" />
+        <service android:enabled="true" android:name=".LocationPollerService" />
+        <service android:enabled="true" android:name=".LocationUploaderService" />
     </application>
 
 </manifest>

@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-public class LocationPoller extends Service implements LocationListener {
+public class LocationPollerService extends Service implements LocationListener {
 
 	private static final String TAG = "LocationPoller";
 	
 	private static LocationManager mLocationManager;
+	
+	private LocationTable locationTable;
 
 	
 	public static boolean isGPSActive() {
@@ -30,12 +32,22 @@ public class LocationPoller extends Service implements LocationListener {
 
 		// Request location updates
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5 * 60 * 1000, 500, this);
+		
+		// Open the database for use
+		locationTable = new LocationTable(this);
+		locationTable.open();
 	}
 
 	@Override
 	public void onDestroy() {
 		Log.e(TAG, "onDestroy - why are we being destroyed???");
-		
+		locationTable.close();
+	}
+	
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		// We want this service to restart as soon as possible
+		return Service.START_STICKY;
 	}
 
 	@Override
@@ -52,8 +64,7 @@ public class LocationPoller extends Service implements LocationListener {
 	public void onLocationChanged(Location loc) {
 		Log.d(TAG, "onLocationChanged");
 		// Store the location into the database
-
-		// Send the location back to the server
+		locationTable.createLocationRow(loc);
 	}
 
 	@Override

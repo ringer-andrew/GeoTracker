@@ -12,7 +12,7 @@ public class LocationStorageHelper extends SQLiteOpenHelper {
 	private static String DATABASE_NAME = "locationstorage";
 	
 	private static final int DATABASE_VERSION = 1;
-	private static final String LOCATION_TABLE_NAME = "locationhistory";
+	protected static final String LOCATION_TABLE_NAME = "locationhistory";
 	private static final String LATITUDE_STR = "latitide";
 	private static final String LONGITUDE_STR = "longitude";
 	private static final String ACCURACY_STR = "accuracy";
@@ -37,6 +37,9 @@ public class LocationStorageHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.d(TAG, "onUpgrade");
+			// Drop the location table and recreate it.
+			db.execSQL("DROP TABLE IF EXISTS " + LOCATION_TABLE_NAME + ";");
+			onCreate(db);
 	}
 
 }
