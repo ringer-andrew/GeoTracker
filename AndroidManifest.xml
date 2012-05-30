@@ -20,7 +20,7 @@
         </receiver>
         <service android:enabled="true" android:name=".LocationPollerService" />
         <service android:enabled="true" android:name=".LocationUploaderService" />
-        <activity android:name=".EnforceGPSActivity" />
+        <activity android:exported="true" android:name=".EnforceGPSActivity" />
     </application>
 
 </manifest>

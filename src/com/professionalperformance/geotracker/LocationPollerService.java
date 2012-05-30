@@ -74,12 +74,13 @@ public class LocationPollerService extends Service implements LocationListener {
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		Log.d(TAG, "onProviderDisabled");
-		if (provider == LocationManager.GPS_PROVIDER) {
+		Log.d(TAG, "onProviderDisabled - looking for: " + LocationManager.GPS_PROVIDER);
+		if (provider.equals(LocationManager.GPS_PROVIDER)) {
 			Intent enforceGPS = new Intent(getApplicationContext(), EnforceGPSActivity.class);
+			enforceGPS.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(enforceGPS);
 		} else {
-			Log.d(TAG, "provider disabled wasn't gps");
+			Log.d(TAG, "provider disabled was: " + provider);
 		}
 	}
 
