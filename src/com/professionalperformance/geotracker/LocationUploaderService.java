@@ -45,6 +45,7 @@ public class LocationUploaderService extends Service {
 				@Override
 				public void onSuccess(String response) {
 					Log.d(TAG, "Successfully submitted to server");
+					lTable.clearTable();
 					stopSelf();
 				}
 				@Override
