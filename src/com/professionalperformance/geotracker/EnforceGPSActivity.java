@@ -26,7 +26,7 @@ public class EnforceGPSActivity extends Activity {
 					Log.d(TAG, "Accepted prompt to turn on gps");
 					Intent locationSourceSettings = new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 					dialog.dismiss();
-					startActivityForResult(locationSourceSettings, Activity.RESULT_OK);
+					startActivityForResult(locationSourceSettings, Activity.RESULT_CANCELED);
 				}
 			}).show();
 	}
@@ -35,8 +35,9 @@ public class EnforceGPSActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d(TAG, "onActivityResult - requestCode=" + requestCode + " - resultCode=" + resultCode);
 		if (!LocationPollerService.isGPSActive()) {
-			launchLocationSettings();
+			Log.d(TAG, "User did not re-activate gps.");
 		} else {
+			Log.d(TAG, "User activated gps, exiting the activity.");
 			finish();
 		}
 	}
