@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     
-    <uses-sdk android:minSdkVersion="13" />
+    <uses-sdk android:minSdkVersion="12" />
     
     <application>
         <receiver android:name=".BootBroadcastReceiver">
@@ -20,6 +20,7 @@
         </receiver>
         <service android:enabled="true" android:name=".LocationPollerService" />
         <service android:enabled="true" android:name=".LocationUploaderService" />
+        <activity android:name=".EnforceGPSActivity" />
     </application>
 
 </manifest>

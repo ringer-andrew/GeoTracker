@@ -5,12 +5,16 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class BootBroadcastReceiver extends BroadcastReceiver {
+	
+	private static String TAG = "BootBroadcastReceiver";
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// Start the location polling
+		Log.d(TAG, "geotracker received boot complete broadcast");
 		Intent locationPollerIntent = new Intent(context, LocationPollerService.class);
 		context.startService(locationPollerIntent);
 		
@@ -20,8 +24,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME_WAKEUP,
+				300000,
 				AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-				AlarmManager.INTERVAL_HALF_HOUR,
 				locationUploaderPendingIntent);
 	}
 

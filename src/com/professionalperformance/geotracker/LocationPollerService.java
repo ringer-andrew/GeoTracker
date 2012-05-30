@@ -16,11 +16,15 @@ public class LocationPollerService extends Service implements LocationListener {
 	
 	private static LocationManager mLocationManager;
 	
-	private LocationTable locationTable;
+	private static LocationTable locationTable;
 
 	
 	public static boolean isGPSActive() {
 		return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+	}
+	
+	public static LocationTable getLocationTable() {
+		return locationTable;
 	}
 	
 	@Override
@@ -46,6 +50,7 @@ public class LocationPollerService extends Service implements LocationListener {
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.d(TAG, "onStartCommand");
 		// We want this service to restart as soon as possible
 		return Service.START_STICKY;
 	}
