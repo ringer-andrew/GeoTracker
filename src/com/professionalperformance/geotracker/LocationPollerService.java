@@ -98,6 +98,6 @@ public class LocationPollerService extends Service implements LocationListener {
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		Log.d(TAG, "onStatusChanged");
+		//Log.d(TAG, "onStatusChanged");
 	}
 }

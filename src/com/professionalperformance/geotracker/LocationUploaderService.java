@@ -83,7 +83,6 @@ public class LocationUploaderService extends Service {
 			// Create a new JSON object and store its key-value pairs
 			JSONObject jObj = new JSONObject();
 			for (int j = 0; j < numCols; j++) {
-				Log.d(TAG, "i:"+i+" j:"+j);
 				try {
 					jObj.put(colNames[j], c.getString(j));
 				} catch (JSONException e) {
