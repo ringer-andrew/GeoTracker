@@ -30,16 +30,16 @@ public class LocationStorageHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-			Log.d(TAG, "onCreate");
-			db.execSQL(LOCATION_TABLE_CREATE);
+		Log.d(TAG, "onCreate");
+		db.execSQL(LOCATION_TABLE_CREATE);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.d(TAG, "onUpgrade");
-			// Drop the location table and recreate it.
-			db.execSQL("DROP TABLE IF EXISTS " + LOCATION_TABLE_NAME + ";");
-			onCreate(db);
+		Log.d(TAG, "onUpgrade");
+		// Drop the location table and recreate it.
+		db.execSQL("DROP TABLE IF EXISTS " + LOCATION_TABLE_NAME + ";");
+		onCreate(db);
 	}
 
 }

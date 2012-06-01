@@ -16,6 +16,7 @@ public class LocationTable {
 	public LocationTable(Context context) {
 		instance = this;
 		dbHelper = new LocationStorageHelper(context);
+		this.open();
 	}
 	
 	public static LocationTable getInstance() {
@@ -23,14 +24,14 @@ public class LocationTable {
 	}
 	
 	/**
-	 * Open the database
+	 * Open the database. This should be called when the object is instantiated
 	 */
 	public void open() throws SQLException {
 		db = dbHelper.getWritableDatabase();
 	}
 	
 	/**
-	 * Close the database
+	 * Close the database. This shouldn't need to be used.
 	 */
 	public void close() {
 		dbHelper.close();
@@ -53,8 +54,7 @@ public class LocationTable {
 	 * @return a cursor pointing to the first row in the table
 	 */
 	public Cursor getAllLocations() {
-		db.query(LocationStorageHelper.LOCATION_TABLE_NAME, null, null, null, null, null, null);
-		return null;
+		return db.query(LocationStorageHelper.LOCATION_TABLE_NAME, null, null, null, null, null, null);
 	}
 	
 	/**

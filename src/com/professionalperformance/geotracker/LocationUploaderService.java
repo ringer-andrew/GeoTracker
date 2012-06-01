@@ -25,18 +25,18 @@ public class LocationUploaderService extends Service {
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
-		
 		// Get the database cursor
 		Cursor locCursor = lTable.getAllLocations();
 		
-		// Create our async client
-		AsyncHttpClient aHC = new AsyncHttpClient();
-		
 		// Put all the rows into a JSON array and convert to StringEntity
 		JSONArray locations = getLocationJSONArray(locCursor);
-		StringEntity se;
+		Log.d(TAG, locations.toString());
+		
+		// Create our async client
+		AsyncHttpClient aHC = new AsyncHttpClient();
+
 		try {
-			se = new StringEntity("JSON: " + locations.toString());
+			StringEntity se = new StringEntity("JSON: " + locations.toString());
 			aHC.post(null, 
 					getString(R.string.location_endpoint),
 					se,
@@ -52,6 +52,7 @@ public class LocationUploaderService extends Service {
 				public void onFailure(Throwable e, String response) {
 					Log.e(TAG, "Error submitting to server");
 					Log.e(TAG, response);
+					stopSelf();
 					e.printStackTrace();
 				}
 				@Override
@@ -62,6 +63,7 @@ public class LocationUploaderService extends Service {
 		} catch (UnsupportedEncodingException e) {
 			Log.e(TAG, "Problem converting JSONArray to a StringEntity");
 			e.printStackTrace();
+			stopSelf();
 		}
 	}
 	

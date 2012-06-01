@@ -19,14 +19,14 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 		context.startService(locationPollerIntent);
 		
 		// Schedule the webserver uploads
-		Intent locationUploaderIntent = new Intent(context, LocationUploaderService.class);
-		PendingIntent locationUploaderPendingIntent = PendingIntent.getBroadcast(context, 0, locationUploaderIntent, 0);
+		Intent locationUploaderBCI = new Intent(context, LocationUploaderService.class);
+		PendingIntent locationUploaderBCPI = PendingIntent.getService(context, 0, locationUploaderBCI, 0);
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME_WAKEUP,
 				300000,
 				AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-				locationUploaderPendingIntent);
+				locationUploaderBCPI);
 	}
 
 }
