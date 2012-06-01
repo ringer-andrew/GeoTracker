@@ -19,19 +19,19 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 public class LocationUploaderService extends Service {
 
 	private static final String TAG = "LocationUploaderService";
-	
+
 	private static LocationTable lTable = LocationTable.getInstance();
-	
+
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
 		// Get the database cursor
 		Cursor locCursor = lTable.getAllLocations();
-		
+
 		// Put all the rows into a JSON array and convert to StringEntity
 		JSONArray locations = getLocationJSONArray(locCursor);
 		Log.d(TAG, locations.toString());
-		
+
 		// Create our async client
 		AsyncHttpClient aHC = new AsyncHttpClient();
 
@@ -66,20 +66,21 @@ public class LocationUploaderService extends Service {
 			stopSelf();
 		}
 	}
-	
+
 	private JSONArray getLocationJSONArray(Cursor c) {
-		
+
 		String[] colNames = c.getColumnNames();
-		int numCols = c.getCount();
+		int numRows = c.getCount();
+		int numCols = c.getColumnCount();
 
 		// Create a JSON array and 
 		JSONArray jArr = new JSONArray();
-		for (int i = 0; i < numCols; i++) {
+		for (int i = 0; i < numRows; i++) {
 			// Create a new JSON object and store its key-value pairs
 			JSONObject jObj = new JSONObject();
-			for(String colName: colNames) {
+			for (int j = 0; j < numCols; j++) {
 				try {
-					jObj.put(colName, c.getColumnIndex(colName));
+					jObj.put(colNames[j], c.getString(j));
 				} catch (JSONException e) {
 					Log.d(TAG, "JSON Exception when querying table");
 					e.printStackTrace();
@@ -88,7 +89,7 @@ public class LocationUploaderService extends Service {
 			jArr.put(jObj);
 			c.moveToNext();
 		}
-		
+
 		return jArr;
 	}
 
