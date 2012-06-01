@@ -51,8 +51,8 @@ public class LocationTable {
 		Log.d(TAG, "Creating row - lon:"+loc.getLongitude()+", lat:"+loc.getLatitude()+", acc:"+loc.getAccuracy());
 		db.execSQL("INSERT INTO " + LocationStorageHelper.LOCATION_TABLE_NAME + " VALUES ("
 				+ "datetime('now'),"
-				+ loc.getLongitude() + ", "
 				+ loc.getLatitude() + ", "
+				+ loc.getLongitude() + ", "
 				+ loc.getAccuracy() + ");");
 	}
 
