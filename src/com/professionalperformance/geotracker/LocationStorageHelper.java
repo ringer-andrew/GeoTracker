@@ -6,11 +6,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class LocationStorageHelper extends SQLiteOpenHelper {
-	
+
 	private static String TAG = "LocationStorageHelper";
-	
+
 	private static String DATABASE_NAME = "locationstorage";
-	
+
 	private static final int DATABASE_VERSION = 1;
 	protected static final String LOCATION_TABLE_NAME = "locationhistory";
 	private static final String LATITUDE_STR = "latitide";

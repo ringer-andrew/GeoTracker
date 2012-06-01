@@ -3,4 +3,5 @@
     <string name="app_name">GeoTracker</string>
     <string name="gps_disabled">GPS Disabled!</string>
     <string name="gps_disabled_message">GPS has been disabled. GPS must be enabled.</string>
+    <string name="first_launch_toast">Successfully performed forced launch.</string>
 </resources>

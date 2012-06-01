@@ -72,13 +72,18 @@ public class LocationUploaderService extends Service {
 		String[] colNames = c.getColumnNames();
 		int numRows = c.getCount();
 		int numCols = c.getColumnCount();
+		
+		Log.d(TAG, "rows:"+numRows+" cols:"+numCols);
 
 		// Create a JSON array and 
 		JSONArray jArr = new JSONArray();
 		for (int i = 0; i < numRows; i++) {
+			// Cursor starts before the first row, so move it up first
+			c.moveToNext();
 			// Create a new JSON object and store its key-value pairs
 			JSONObject jObj = new JSONObject();
 			for (int j = 0; j < numCols; j++) {
+				Log.d(TAG, "i:"+i+" j:"+j);
 				try {
 					jObj.put(colNames[j], c.getString(j));
 				} catch (JSONException e) {
@@ -87,7 +92,6 @@ public class LocationUploaderService extends Service {
 				}
 			}
 			jArr.put(jObj);
-			c.moveToNext();
 		}
 
 		return jArr;

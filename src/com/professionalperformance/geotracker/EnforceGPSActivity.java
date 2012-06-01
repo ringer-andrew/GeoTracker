@@ -6,11 +6,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 public class EnforceGPSActivity extends Activity {
-	
+
 	private static String TAG = "EnforceGPS";
-	
+
 	/**
 	 * Wrapper to prompt the user and launch the gps settings.
 	 */
@@ -53,9 +54,8 @@ public class EnforceGPSActivity extends Activity {
 	@Override
 	protected void onPause() {
 		Log.d(TAG, "onPause");
-		if (isFinishing() && !LocationPollerService.isGPSActive()) {
+		if (isFinishing() && LocationPollerService.isInitialized() && !LocationPollerService.isGPSActive()) {
 			Log.d(TAG, "onPause, not finishing, GPS not active");
-			//launchLocationSettings();
 		}
 		super.onPause();
 	}
@@ -64,7 +64,22 @@ public class EnforceGPSActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG, "onResume");
-		if (!LocationPollerService.isGPSActive()) {
+
+		if (!LocationPollerService.isInitialized()) {
+			Toast.makeText(getApplicationContext(), R.string.first_launch_toast, Toast.LENGTH_LONG).show();
+			Thread thread = new Thread() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(Toast.LENGTH_LONG);
+						finish();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			thread.start();
+		} else if (!LocationPollerService.isGPSActive()) {
 			Log.d(TAG, "gps is not enabled, forcing the user to activate gps");
 			launchLocationSettings();
 		} else {

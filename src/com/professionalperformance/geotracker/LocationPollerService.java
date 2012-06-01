@@ -13,20 +13,24 @@ import android.util.Log;
 public class LocationPollerService extends Service implements LocationListener {
 
 	private static final String TAG = "LocationPoller";
-	
+
 	private static LocationManager mLocationManager;
-	
+
 	private static LocationTable locationTable;
 
-	
+
 	public static boolean isGPSActive() {
 		return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
-	
+
+	public static boolean isInitialized() {
+		return (mLocationManager != null);
+	}
+
 	public static LocationTable getLocationTable() {
 		return locationTable;
 	}
-	
+
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
@@ -36,7 +40,7 @@ public class LocationPollerService extends Service implements LocationListener {
 
 		// Request location updates
 		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5 * 60 * 1000, 500, this);
-		
+
 		// Open the database for use
 		locationTable = new LocationTable(this);
 		locationTable.open();
@@ -47,7 +51,7 @@ public class LocationPollerService extends Service implements LocationListener {
 		Log.e(TAG, "onDestroy - why are we being destroyed???");
 		locationTable.close();
 	}
-	
+
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(TAG, "onStartCommand");
