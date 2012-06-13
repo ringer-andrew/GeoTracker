@@ -1,6 +1,8 @@
 package com.professionalperformance.geotracker;
 
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
@@ -8,9 +10,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.IBinder;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -22,6 +28,8 @@ public class LocationUploaderService extends Service {
 
 	private static LocationTable lTable = LocationTable.getInstance();
 
+	private static MessageDigest md;
+
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
@@ -32,8 +40,30 @@ public class LocationUploaderService extends Service {
 		JSONArray locations = getLocationJSONArray(locCursor);
 		Log.d(TAG, locations.toString());
 
+		// Get the encryption algorithm
+		try {
+			md = MessageDigest.getInstance("SHA-512");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+
+		// Get Wifi mac address
+		WifiManager wifiMan = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+		WifiInfo wifiInf = wifiMan.getConnectionInfo();
+		String macAddr = wifiInf.getMacAddress();
+
+
+		// Get the IMEI
+		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+		String imei = telephonyManager.getDeviceId();
+
 		// Create our async client
 		AsyncHttpClient aHC = new AsyncHttpClient();
+
+		// Set up the header
+		String preHashedID = macAddr + imei;
+		String hashedID = md.digest(preHashedID.getBytes()).toString();
+		aHC.addHeader("Android-id", hashedID);
 
 		try {
 			StringEntity se = new StringEntity("JSON: " + locations.toString());
