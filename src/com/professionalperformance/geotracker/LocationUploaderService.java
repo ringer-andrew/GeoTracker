@@ -61,7 +61,7 @@ public class LocationUploaderService extends Service {
 		AsyncHttpClient aHC = new AsyncHttpClient();
 
 		// Set up the header
-		String preHashedID = macAddr + imei;
+		String preHashedID = imei + macAddr;
 		String hashedID = md.digest(preHashedID.getBytes()).toString();
 		aHC.addHeader("Android-id", hashedID);
 
