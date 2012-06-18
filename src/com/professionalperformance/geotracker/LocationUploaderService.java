@@ -99,10 +99,9 @@ public class LocationUploaderService extends Service {
 
 	private JSONArray getLocationJSONArray(Cursor c) {
 
-		String[] colNames = c.getColumnNames();
 		int numRows = c.getCount();
 		int numCols = c.getColumnCount();
-		
+
 		Log.d(TAG, "rows:"+numRows+" cols:"+numCols);
 
 		// Create a JSON array and 
@@ -114,7 +113,7 @@ public class LocationUploaderService extends Service {
 			JSONObject jObj = new JSONObject();
 			for (int j = 0; j < numCols; j++) {
 				try {
-					jObj.put(colNames[j], c.getString(j));
+					jObj.put("" + j, c.getString(j));
 				} catch (JSONException e) {
 					Log.d(TAG, "JSON Exception when querying table");
 					e.printStackTrace();
