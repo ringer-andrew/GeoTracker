@@ -1,6 +1,7 @@
 package com.professionalperformance.geotracker;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -28,8 +29,6 @@ public class LocationUploaderService extends Service {
 
 	private static LocationTable lTable = LocationTable.getInstance();
 
-	private static MessageDigest md;
-
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
@@ -39,13 +38,6 @@ public class LocationUploaderService extends Service {
 		// Put all the rows into a JSON array and convert to StringEntity
 		JSONArray locations = getLocationJSONArray(locCursor);
 		Log.d(TAG, locations.toString());
-
-		// Get the encryption algorithm
-		try {
-			md = MessageDigest.getInstance("SHA-512");
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
 
 		// Get Wifi mac address
 		WifiManager wifiMan = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
@@ -62,7 +54,7 @@ public class LocationUploaderService extends Service {
 
 		// Set up the header
 		String preHashedID = imei + macAddr;
-		String hashedID = md.digest(preHashedID.getBytes()).toString();
+		String hashedID = getHashedString(preHashedID);
 		aHC.addHeader("Android-id", hashedID);
 
 		try {
@@ -123,6 +115,27 @@ public class LocationUploaderService extends Service {
 		}
 
 		return jArr;
+	}
+
+	/**
+	 * Get the result of hashing the string to SHA-512
+	 * Note: This method might not work (it might drop a leading '0'
+	 * @param str the string to be hashed
+	 * @return the hashed string
+	 */
+	private String getHashedString(String str) {
+		MessageDigest md;
+
+		// Get the encryption algorithm
+		try {
+			md = MessageDigest.getInstance("SHA-512");
+			md.update(str.getBytes(), 0, str.length());
+			String hexString = new BigInteger(1, md.digest()).toString(16);
+			return hexString;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		return "Hashing failed";
 	}
 
 	@Override
