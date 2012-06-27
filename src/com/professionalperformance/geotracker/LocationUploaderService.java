@@ -119,7 +119,7 @@ public class LocationUploaderService extends Service {
 
 	/**
 	 * Get the result of hashing the string to SHA-512
-	 * Note: This method might not work (it might drop a leading '0'
+	 * Note: This method might not work (it might drop a leading '0')
 	 * @param str the string to be hashed
 	 * @return the hashed string
 	 */
