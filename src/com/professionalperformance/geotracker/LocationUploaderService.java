@@ -27,17 +27,27 @@ public class LocationUploaderService extends Service {
 
 	private static final String TAG = "LocationUploaderService";
 
-	private static LocationTable lTable = LocationTable.getInstance();
+	private static LocationTable lTable;
 
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
+
+		// Get the instance of the table.
+		lTable = LocationTable.getInstance();
+
 		// Get the database cursor
 		Cursor locCursor = lTable.getAllLocations();
 
 		// Put all the rows into a JSON array and convert to StringEntity
 		JSONArray locations = getLocationJSONArray(locCursor);
-		Log.d(TAG, locations.toString());
+		JSONObject locContainer = new JSONObject();
+		try {
+			locContainer.put("locations", locations);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		Log.d(TAG, locContainer.toString());
 
 		// Get Wifi mac address
 		WifiManager wifiMan = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
@@ -58,8 +68,8 @@ public class LocationUploaderService extends Service {
 		aHC.addHeader("Android-id", hashedID);
 
 		try {
-			StringEntity se = new StringEntity("JSON: " + locations.toString());
-			aHC.post(null, 
+			StringEntity se = new StringEntity(locContainer.toString());
+			aHC.post(this,
 					getString(R.string.location_endpoint),
 					se,
 					"application/json",
@@ -74,8 +84,8 @@ public class LocationUploaderService extends Service {
 				public void onFailure(Throwable e, String response) {
 					Log.e(TAG, "Error submitting to server");
 					Log.e(TAG, response);
-					stopSelf();
 					e.printStackTrace();
+					stopSelf();
 				}
 				@Override
 				public void onStart() {
@@ -105,7 +115,7 @@ public class LocationUploaderService extends Service {
 			JSONObject jObj = new JSONObject();
 			for (int j = 0; j < numCols; j++) {
 				try {
-					jObj.put("" + j, c.getString(j));
+					jObj.put(c.getColumnName(j), c.getString(j));
 				} catch (JSONException e) {
 					Log.d(TAG, "JSON Exception when querying table");
 					e.printStackTrace();

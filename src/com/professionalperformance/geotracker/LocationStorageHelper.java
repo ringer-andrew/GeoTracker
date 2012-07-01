@@ -13,7 +13,7 @@ public class LocationStorageHelper extends SQLiteOpenHelper {
 
 	private static final int DATABASE_VERSION = 1;
 	protected static final String LOCATION_TABLE_NAME = "locationhistory";
-	private static final String LATITUDE_STR = "latitide";
+	private static final String LATITUDE_STR = "latitude";
 	private static final String LONGITUDE_STR = "longitude";
 	private static final String ACCURACY_STR = "accuracy";
 	private static final String DATETIME_STR = "date";
