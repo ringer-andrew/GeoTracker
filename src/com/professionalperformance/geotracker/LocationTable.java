@@ -25,6 +25,9 @@ public class LocationTable {
 
 	public static LocationTable getInstance() {
 		Log.d(TAG, "getting instance of LocationTable");
+		if (instance == null) {
+			Log.d(TAG, "fetching instance before it is created.");
+		}
 		return instance;
 	}
 
