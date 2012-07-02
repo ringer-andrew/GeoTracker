@@ -115,7 +115,12 @@ public class LocationUploaderService extends Service {
 			JSONObject jObj = new JSONObject();
 			for (int j = 0; j < numCols; j++) {
 				try {
-					jObj.put(c.getColumnName(j), c.getString(j));
+					if (c.getColumnName(j).equals("date")) {
+						Log.d(TAG, "Getting date column");
+						jObj.put(c.getColumnName(j), c.getString(j));
+					} else {
+						jObj.put(c.getColumnName(j), c.getDouble(j));
+					}
 				} catch (JSONException e) {
 					Log.d(TAG, "JSON Exception when querying table");
 					e.printStackTrace();
