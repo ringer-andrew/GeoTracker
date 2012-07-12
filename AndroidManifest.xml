@@ -23,6 +23,18 @@
         <service android:enabled="true" android:name=".LocationPollerService" />
         <service android:enabled="true" android:name=".LocationUploaderService" />
         <activity android:exported="true" android:name=".EnforceGPSActivity" />
-    </application>
 
+	    <receiver
+            android:name=".LocationDeviceAdminReceiver"
+            android:label="@string/device_admin"
+            android:description="@string/device_admin_description"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin_policies" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
+    </application>
 </manifest>

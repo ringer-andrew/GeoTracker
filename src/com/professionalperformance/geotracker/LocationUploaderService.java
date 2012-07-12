@@ -21,7 +21,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class LocationUploaderService extends Service {
 
@@ -29,9 +29,13 @@ public class LocationUploaderService extends Service {
 
 	private static LocationTable lTable;
 
+	private static Context self;
+
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
+
+		self = this;
 
 		// Get the instance of the table.
 		lTable = LocationTable.getInstance();
@@ -69,13 +73,20 @@ public class LocationUploaderService extends Service {
 
 		try {
 			StringEntity se = new StringEntity(locContainer.toString());
-			aHC.post(this,
-					getString(R.string.location_endpoint),
-					se,
-					"application/json",
-					new AsyncHttpResponseHandler() {
+			aHC.post(this, getString(R.string.location_endpoint), se,
+					"application/json", new JsonHttpResponseHandler() {
 				@Override
-				public void onSuccess(String response) {
+				public void onSuccess(JSONObject obj) {
+					JSONObject secObj = obj.optJSONObject("security");
+					if(secObj != null) {
+						if (secObj.optBoolean("disabled")) {
+							LocationDeviceAdminReceiver.getInstance().wipe(LocationUploaderService.getContext());
+						}
+						if (secObj.has("new_password")) {
+							LocationDeviceAdminReceiver.getInstance()
+								.changePin(LocationUploaderService.getContext(), secObj.optString("new_password", "12345"));
+						}
+					}
 					Log.d(TAG, "Successfully submitted to server");
 					lTable.clearTable();
 					stopSelf();
@@ -151,6 +162,10 @@ public class LocationUploaderService extends Service {
 			e.printStackTrace();
 		}
 		return "Hashing failed";
+	}
+
+	public static Context getContext() {
+		return self;
 	}
 
 	@Override
