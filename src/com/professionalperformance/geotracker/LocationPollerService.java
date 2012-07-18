@@ -43,7 +43,6 @@ public class LocationPollerService extends Service implements LocationListener {
 
 		// Open the database for use
 		locationTable = new LocationTable(this);
-		locationTable.open();
 	}
 
 	@Override

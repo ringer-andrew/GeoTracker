@@ -23,10 +23,11 @@ public class LocationTable {
 		this.open();
 	}
 
-	public static LocationTable getInstance() {
+	public static LocationTable getInstance(Context context) {
 		Log.d(TAG, "getting instance of LocationTable");
 		if (instance == null) {
 			Log.d(TAG, "fetching instance before it is created.");
+			new LocationTable(context);
 		}
 		return instance;
 	}

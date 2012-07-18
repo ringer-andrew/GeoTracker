@@ -38,7 +38,7 @@ public class LocationUploaderService extends Service {
 		self = this;
 
 		// Get the instance of the table.
-		lTable = LocationTable.getInstance();
+		lTable = LocationTable.getInstance(getContext());
 
 		// Get the database cursor
 		Cursor locCursor = lTable.getAllLocations();
