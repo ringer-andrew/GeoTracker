@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.professionalperformance.geotracker"
+    android:installLocation="internalOnly"
     android:versionCode="1"
-    android:versionName="1.0"
-    android:installLocation="internalOnly">
+    android:versionName="1.0" >
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -11,30 +11,50 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    
+
     <uses-sdk android:minSdkVersion="12" />
-    
+
     <application>
-        <receiver android:name=".BootBroadcastReceiver">
+        <receiver android:name="com.professionalperformance.geotracker.BootBroadcastReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <service android:enabled="true" android:name=".LocationPollerService" />
-        <service android:enabled="true" android:name=".LocationUploaderService" />
-        <activity android:exported="true" android:name=".EnforceGPSActivity" />
 
-	    <receiver
-            android:name=".LocationDeviceAdminReceiver"
-            android:label="@string/device_admin"
+        <service
+            android:name="com.professionalperformance.geotracker.LocationPollerService"
+            android:enabled="true" />
+        <service
+            android:name="com.professionalperformance.geotracker.LocationUploaderService"
+            android:enabled="true" />
+
+        <activity
+            android:name="com.professionalperformance.geotracker.EnforceGPSActivity"
+            android:exported="true" />
+
+        <receiver
+            android:name="com.professionalperformance.geotracker.LocationDeviceAdminReceiver"
             android:description="@string/device_admin_description"
-            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            android:label="@string/device_admin"
+            android:permission="android.permission.BIND_DEVICE_ADMIN" >
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin_policies" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="com.professionalperformance.geotracker.MainActivity"
+            android:label="@string/title_activity_main" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>

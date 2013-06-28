@@ -13,7 +13,7 @@ import android.util.Log;
 public class LocationPollerService extends Service implements LocationListener {
 
 	private static final String TAG = "LocationPoller";
-
+	
 	private static LocationManager mLocationManager;
 
 	private static LocationTable locationTable;
@@ -31,6 +31,10 @@ public class LocationPollerService extends Service implements LocationListener {
 		return locationTable;
 	}
 
+	
+	private int minRequestTime = 5; //in seconds
+	private float minRequestDisplacement = 0; //in meters
+	
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
@@ -39,7 +43,7 @@ public class LocationPollerService extends Service implements LocationListener {
 		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		// Request location updates
-		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5 * 60 * 1000, 500, this);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minRequestTime * 1000, minRequestDisplacement, this);
 
 		// Open the database for use
 		locationTable = new LocationTable(this);

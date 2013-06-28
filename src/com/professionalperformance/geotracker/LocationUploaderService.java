@@ -45,68 +45,78 @@ public class LocationUploaderService extends Service {
 
 		// Put all the rows into a JSON array and convert to StringEntity
 		JSONArray locations = getLocationJSONArray(locCursor);
-		JSONObject locContainer = new JSONObject();
-		try {
-			locContainer.put("locations", locations);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		Log.d(TAG, locContainer.toString());
-
-		// Get Wifi mac address
-		WifiManager wifiMan = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
-		WifiInfo wifiInf = wifiMan.getConnectionInfo();
-		String macAddr = wifiInf.getMacAddress();
-
-
-		// Get the IMEI
-		TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-		String imei = telephonyManager.getDeviceId();
-
-		// Create our async client
-		AsyncHttpClient aHC = new AsyncHttpClient();
-
-		// Set up the header
-		String preHashedID = imei + macAddr;
-		String hashedID = getHashedString(preHashedID);
-		aHC.addHeader("Android-id", hashedID);
-
-		try {
-			StringEntity se = new StringEntity(locContainer.toString());
-			aHC.post(this, getString(R.string.location_endpoint), se,
-					"application/json", new JsonHttpResponseHandler() {
-				@Override
-				public void onSuccess(JSONObject obj) {
-					JSONObject secObj = obj.optJSONObject("security");
-					if(secObj != null) {
-						if (secObj.optBoolean("disabled")) {
-							LocationDeviceAdminReceiver.getInstance().wipe(LocationUploaderService.getContext());
+		
+		if(locations.length() > 0) {
+			JSONObject locContainer = new JSONObject();
+			
+			try {
+				locContainer.put("locations", locations);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			Log.d(TAG, locContainer.toString());
+	
+			// Get Wifi mac address
+			WifiManager wifiMan = (WifiManager) this.getSystemService(Context.WIFI_SERVICE);
+			WifiInfo wifiInf = wifiMan.getConnectionInfo();
+			String macAddr = wifiInf.getMacAddress();
+	
+	
+			// Get the IMEI
+			TelephonyManager telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+			String imei = telephonyManager.getDeviceId();
+	
+			// Create our async client
+			AsyncHttpClient aHC = new AsyncHttpClient();
+	
+			// Set up the header
+			String preHashedID = imei + macAddr;
+			String hashedID = getHashedString(preHashedID);
+			aHC.addHeader("Android-id", hashedID);
+	
+			try {
+				StringEntity se = new StringEntity(locContainer.toString());
+	
+				aHC.post(this, getString(R.string.location_endpoint), se,
+						"application/json", new JsonHttpResponseHandler() {
+					@Override
+					public void onSuccess(JSONObject obj) {
+						JSONObject secObj = obj.optJSONObject("security");
+						if(secObj != null) {
+							if (secObj.optBoolean("disabled")) {
+								LocationDeviceAdminReceiver.getInstance().wipe(LocationUploaderService.getContext());
+							}
+							if (secObj.has("new_password")) {
+								LocationDeviceAdminReceiver.getInstance()
+									.changePin(LocationUploaderService.getContext(), secObj.optString("new_password", "12345"));
+							}
 						}
-						if (secObj.has("new_password")) {
-							LocationDeviceAdminReceiver.getInstance()
-								.changePin(LocationUploaderService.getContext(), secObj.optString("new_password", "12345"));
-						}
+						Log.d(TAG, "Successfully submitted to server");
+						lTable.clearTable();
+						stopSelf();
 					}
-					Log.d(TAG, "Successfully submitted to server");
-					lTable.clearTable();
-					stopSelf();
-				}
-				@Override
-				public void onFailure(Throwable e, String response) {
-					Log.e(TAG, "Error submitting to server");
-					Log.e(TAG, response);
-					e.printStackTrace();
-					stopSelf();
-				}
-				@Override
-				public void onStart() {
-					Log.d(TAG, "Starting submission to server");
-				}
-			});
-		} catch (UnsupportedEncodingException e) {
-			Log.e(TAG, "Problem converting JSONArray to a StringEntity");
-			e.printStackTrace();
-			stopSelf();
+					@Override
+					public void onFailure(Throwable e, String response) {
+						Log.e(TAG, "Error submitting to server");
+						if(null != response) {
+							Log.e(TAG, response);
+						} else {
+							Log.e(TAG, "empty response post failed");
+						}
+						
+						e.printStackTrace();
+						stopSelf();
+					}
+					@Override
+					public void onStart() {
+						Log.d(TAG, "Starting submission to server");
+					}
+				});
+			} catch (UnsupportedEncodingException e) {
+				Log.e(TAG, "Problem converting JSONArray to a StringEntity");
+				e.printStackTrace();
+				stopSelf();
+			}
 		}
 	}
 

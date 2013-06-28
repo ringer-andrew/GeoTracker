@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">GeoTracker</string>
     <string name="gps_disabled">GPS Disabled!</string>
     <string name="gps_disabled_message">GPS has been disabled. GPS must be enabled.</string>
     <string name="first_launch_toast">Successfully performed forced launch.</string>
-
     <string name="device_admin">Professional Performance Device Administrator</string>
     <string name="device_admin_description">Ensuring security while using the Pro Nurse Application</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

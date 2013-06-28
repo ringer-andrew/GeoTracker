@@ -24,8 +24,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		alarmManager.setInexactRepeating(
 				AlarmManager.ELAPSED_REALTIME_WAKEUP,	// Set the alarm to wake after boot
-				300000,									// Set time after wake to fire to 5min
-				AlarmManager.INTERVAL_FIFTEEN_MINUTES,	// Set the time between submission to 15min
+				60000,									// Set time after wake to fire to 5min
+				10000,	// Set the time between submission to 15min
 				locationUploaderBCPI);					// set the intent to fire
 	}
 
