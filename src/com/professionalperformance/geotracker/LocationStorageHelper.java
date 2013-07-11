@@ -26,6 +26,7 @@ public class LocationStorageHelper extends SQLiteOpenHelper {
 
 	public LocationStorageHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+		Log.d(TAG, "constructor");
 	}
 
 	@Override

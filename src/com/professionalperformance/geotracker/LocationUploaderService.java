@@ -126,7 +126,7 @@ public class LocationUploaderService extends Service {
 		int numCols = c.getColumnCount();
 
 		Log.d(TAG, "rows:"+numRows+" cols:"+numCols);
-
+		
 		// Create a JSON array and 
 		JSONArray jArr = new JSONArray();
 		for (int i = 0; i < numRows; i++) {
@@ -162,6 +162,7 @@ public class LocationUploaderService extends Service {
 	private String getHashedString(String str) {
 		MessageDigest md;
 
+		Log.d(TAG, "getHashedString");
 		// Get the encryption algorithm
 		try {
 			md = MessageDigest.getInstance("SHA-512");
@@ -175,6 +176,7 @@ public class LocationUploaderService extends Service {
 	}
 
 	public static Context getContext() {
+		Log.d(TAG, "getContext");
 		return self;
 	}
 

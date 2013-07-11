@@ -44,6 +44,7 @@ public class LocationTable {
 	 * Close the database. This shouldn't need to be used.
 	 */
 	public void close() {
+		Log.d(TAG, "close db");
 		dbHelper.close();
 	}
 
