@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="location_endpoint">http://ojordan.tk/files/healthPost.php</string>
+    <string name="location_endpoint">https://opengears.aws.af.cm/device.json</string>
 </resources>

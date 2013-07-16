@@ -101,7 +101,7 @@ public class LocationPollerService extends Service implements LocationListener, 
 			while(li.hasNext()) {
 				Location l = li.next();
 				
-				if(l.equals(loc) == false) {
+				if(l.distanceTo(loc) >= 3 - loc.getAccuracy() - l.getAccuracy()) {
 					stopped = false;
 					break;
 				}
@@ -164,9 +164,10 @@ public class LocationPollerService extends Service implements LocationListener, 
 			debugText += event.values[i] + " ";
 		}
 		
-		Log.d(TAG, debugText);		
+		Log.d(TAG, debugText);
 		
-		if(movement > 3) {
+		//movement is displacement squared so checking if moved more than 3m
+		if(event.accuracy != SensorManager.SENSOR_STATUS_UNRELIABLE && movement > 9) {
 			// Request location updates
 			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minRequestTime * 1000, minRequestDisplacement, this);
 			mSensorManager.unregisterListener(this, mSensor);
