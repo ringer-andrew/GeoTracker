@@ -1,6 +1,15 @@
 #!/bin/bash
-APT_DIR=~/android-sdk-macosx/platform-tools
+
+if [ $1 ]; then
+  APT_DIR=$1 
+else
+  APT_DIR=~/android-sdk-macosx/platform-tools
+fi
+
 $APT_DIR/adb uninstall com.professionalperformance.geotracker
-$APT_DIR/adb install GeoTracker.apk
+
+APP_DIR=`dirname $0`
+$APT_DIR/adb install $APP_DIR/../bin/GeoTracker.apk
+
 $APT_DIR/adb shell am start -n com.professionalperformance.geotracker/.EnforceGPSActivity
 $APT_DIR/adb shell am broadcast -a android.intent.action.BOOT_COMPLETED

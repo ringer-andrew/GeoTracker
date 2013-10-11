@@ -2,9 +2,14 @@ package com.professionalperformance.geotracker;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,6 +22,7 @@ public class EnforceGPSActivity extends Activity {
 	 */
 	private void launchLocationSettings() {
 		Log.d(TAG, "launchLocationSettings");
+				
 		new AlertDialog.Builder(this)
 			.setTitle(R.string.gps_disabled)
 			.setCancelable(false)
@@ -43,8 +49,6 @@ public class EnforceGPSActivity extends Activity {
 		}
 	}
 
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,7 +68,7 @@ public class EnforceGPSActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG, "onResume");
-
+		
 		if (!LocationPollerService.isInitialized()) {
 			Toast.makeText(getApplicationContext(), R.string.first_launch_toast, Toast.LENGTH_LONG).show();
 			Thread thread = new Thread() {

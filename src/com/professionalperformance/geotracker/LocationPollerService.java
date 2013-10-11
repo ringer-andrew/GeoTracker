@@ -24,7 +24,7 @@ public class LocationPollerService extends Service implements LocationListener, 
 	private static LocationManager mLocationManager;
 
 	private static LocationTable locationTable;
-
+	
 	public static boolean isGPSActive() {
 		return mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 	}
@@ -36,12 +36,14 @@ public class LocationPollerService extends Service implements LocationListener, 
 	public static LocationTable getLocationTable() {
 		return locationTable;
 	}
-
 	
 	private int minRequestTime = 60; //in seconds
 	private float minRequestDisplacement = 0; //in meters
 	private SensorManager mSensorManager;
 	private Sensor mSensor;
+	
+	private LocationNotifierActivity locationNotifierActivity;
+	
 	@Override
 	public void onCreate() {
 		Log.d(TAG, "onCreate");
@@ -61,7 +63,7 @@ public class LocationPollerService extends Service implements LocationListener, 
 		mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
 		
-//		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 500, this);
+		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60 * 1000, 500, this);
 		//	Start the accelerometer sensor
 		mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE);
 		
@@ -93,6 +95,8 @@ public class LocationPollerService extends Service implements LocationListener, 
 	public void onLocationChanged(Location loc) {
 		Log.d(TAG, "onLocationChanged");
 		
+		locationNotifierActivity.onMove(loc);
+		
 		boolean stopped = true;
 		
 		if(previousLocations.size() >= 3) {
@@ -114,6 +118,8 @@ public class LocationPollerService extends Service implements LocationListener, 
 		if(stopped == false) {
 			// Store the location into the database
 			locationTable.createLocationRow(loc);
+			
+			locationNotifierActivity.onMove(loc);
 		} else {
 			// Power reduced mode if previous 3 positions are all the same
 			mLocationManager.removeUpdates(this);
@@ -124,7 +130,9 @@ public class LocationPollerService extends Service implements LocationListener, 
 	@Override
 	public void onProviderDisabled(String provider) {
 		Log.d(TAG, "onProviderDisabled - looking for: " + LocationManager.GPS_PROVIDER);
+		
 		if (provider.equals(LocationManager.GPS_PROVIDER)) {
+			Log.d(TAG, "launch intent");
 			Intent enforceGPS = new Intent(getApplicationContext(), EnforceGPSActivity.class);
 			enforceGPS.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(enforceGPS);
@@ -155,19 +163,16 @@ public class LocationPollerService extends Service implements LocationListener, 
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		Log.d(TAG, "onSensorChanged");	
+//		Log.d(TAG, "onSensorChanged");	
 		float movement = 0;
 		
-		String debugText = "";
 		for(int i = 0; i < event.values.length; i++) {
 			movement += event.values[i] * event.values[i];
-			debugText += event.values[i] + " ";
 		}
-		
-		Log.d(TAG, debugText);
 		
 		//movement is displacement squared so checking if moved more than 3m
 		if(event.accuracy != SensorManager.SENSOR_STATUS_UNRELIABLE && movement > 9) {
+			Log.d(TAG, Float.toString(movement));
 			// Request location updates
 			mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minRequestTime * 1000, minRequestDisplacement, this);
 			mSensorManager.unregisterListener(this, mSensor);
